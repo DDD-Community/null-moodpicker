@@ -1,3 +1,5 @@
+import Tab = chrome.tabs.Tab;
+
 const PICK = "pick";
 const PICK_MODE_ICON = "pick-mode.png";
 const DEFAULT_ICON = "icon.png";
@@ -6,21 +8,21 @@ chrome.commands.onCommand.addListener(command => {
   if (command === PICK) {
     chrome.storage.sync.get("isPickMode", ({ isPickMode }) => {
         if (isPickMode) {
-          toggleToDefault();
+          toggleTo(false);
           return;
         }
-        toggleToPickMode();
+        toggleTo(true);
       }
-    )
+    );
   }
 });
 
-const toggleToDefault = () => {
-  chrome.browserAction.setIcon({ path: DEFAULT_ICON });
-  chrome.storage.sync.set({ "isPickMode": false });
-}
+const toggleTo = (isPickMode: boolean) => {
+  chrome.browserAction.setIcon({ path: isPickMode ? PICK_MODE_ICON : DEFAULT_ICON });
 
-const toggleToPickMode = () => {
-  chrome.browserAction.setIcon({ path: PICK_MODE_ICON });
-  chrome.storage.sync.set({ "isPickMode": true });
+  chrome.storage.sync.set({ isPickMode });
+
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs: Tab[]) => {
+    chrome.tabs.sendMessage(tabs[0].id!, { isPickMode });
+  });
 }

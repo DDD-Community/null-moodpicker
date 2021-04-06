@@ -22,8 +22,3 @@ const toggleTo = (isPickMode: boolean) => {
     }
   });
 }
-
-chrome.tabs.onCreated.addListener(tab => {
-  chrome.storage.sync.get("isPickMode", ({ isPickMode }) =>
-    chrome.tabs.sendMessage(tab.id!, { isPickMode }));
-});

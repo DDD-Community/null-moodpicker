@@ -1,3 +1,11 @@
+chrome.storage.sync.get("isPickMode", ({ isPickMode }) => {
+  if (isPickMode) {
+    document.body.addEventListener("click", pickImage);
+    return;
+  }
+  document.body.removeEventListener("click", pickImage);
+});
+
 chrome.runtime.onMessage.addListener(({ isPickMode }) => {
   if (isPickMode) {
     document.body.addEventListener("click", pickImage);
@@ -71,4 +79,3 @@ const slideOut = (element: HTMLImageElement) => {
   }
   requestAnimationFrame(moveRight);
 }
-

@@ -1,17 +1,17 @@
 chrome.storage.sync.get("isPickMode", ({ isPickMode }) => {
-  if (isPickMode) {
-    document.body.addEventListener("click", pickImage);
-    return;
-  }
-  document.body.removeEventListener("click", pickImage);
+  switchPickMode(isPickMode);
 });
 
-chrome.runtime.onMessage.addListener(({ isPickMode }) => {
+const switchPickMode = (isPickMode: boolean) => {
   if (isPickMode) {
     document.body.addEventListener("click", pickImage);
     return;
   }
   document.body.removeEventListener("click", pickImage);
+}
+
+chrome.runtime.onMessage.addListener(({ isPickMode }) => {
+  switchPickMode(isPickMode);
 });
 
 let timer: NodeJS.Timeout | null;
@@ -21,32 +21,32 @@ const pickImage = (event: MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
     if (!timer) {
-      const imageTarget = event.target as HTMLImageElement;
+      const { src } = event.target as HTMLImageElement;
       timer = setTimeout(() => {
         timer = null;
 
         const imageElement = document.createElement("img");
-        imageElement.src = imageTarget.src;
+        imageElement.src = src;
 
-        const style = imageElement.style;
-
-        style.position = "fixed";
-        style.zIndex = "50";
-        style.right = "0";
-        style.top = "0";
-        style.margin = "0.5rem";
-        style.maxWidth = "10rem";
-        style.maxHeight = "8rem";
-        style.border = "0.3rem solid black";
-        style.borderRadius = "0.5rem";
-
+        setStyle(imageElement);
         fadeIn(imageElement, slideOut);
 
         document.body.appendChild(imageElement);
-
       }, 500);
     }
   }
+}
+
+const setStyle = ({ style }: HTMLImageElement) => {
+  style.position = "fixed";
+  style.zIndex = "50";
+  style.right = "0";
+  style.top = "0";
+  style.margin = "0.5rem";
+  style.maxWidth = "10rem";
+  style.maxHeight = "8rem";
+  style.border = "0.3rem solid black";
+  style.borderRadius = "0.5rem";
 }
 
 const fadeIn = (element: HTMLImageElement, callback: (it: HTMLImageElement) => void) => {
@@ -70,11 +70,15 @@ const fadeIn = (element: HTMLImageElement, callback: (it: HTMLImageElement) => v
 const slideOut = (element: HTMLImageElement) => {
   let marginValue = 0.5;
   let fps = 120;
+
   const moveRight = () => {
     setTimeout(() => {
       marginValue -= 0.4;
       element.style.marginRight = marginValue + "rem";
       requestAnimationFrame(moveRight);
+      if (element.x > document.body.clientWidth) {
+        document.body.removeChild(element);
+      }
     }, 1000 / fps);
   }
   requestAnimationFrame(moveRight);

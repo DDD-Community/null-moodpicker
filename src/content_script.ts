@@ -14,16 +14,16 @@ chrome.runtime.onMessage.addListener(({ isPickMode }) => {
   switchPickMode(isPickMode);
 });
 
-let timer: NodeJS.Timeout | null;
+let TIMER: NodeJS.Timeout | null;
 
 const pickImage = (event: MouseEvent) => {
   if (event.target instanceof HTMLImageElement) {
     event.preventDefault();
     event.stopPropagation();
-    if (!timer) {
+    if (!TIMER) {
       const { src } = event.target as HTMLImageElement;
-      timer = setTimeout(() => {
-        timer = null;
+      TIMER = setTimeout(() => {
+        TIMER = null;
 
         const imageElement = document.createElement("img");
         imageElement.src = src;

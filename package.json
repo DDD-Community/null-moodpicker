@@ -17,6 +17,7 @@
     "url": "https://github.com/DDD-5/null-moodpicker"
   },
   "dependencies": {
+    "@material-ui/core": "^4.11.3",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },

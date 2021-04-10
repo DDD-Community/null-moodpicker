@@ -1,8 +1,21 @@
 import Tab = chrome.tabs.Tab;
+// @ts-ignore
+import ColorThief from "colorthief";
 
+const colorThief = new ColorThief();
 const PICK = "pick";
 const PICK_MODE_ICON = "pick-mode.png";
 const DEFAULT_ICON = "icon.png";
+
+chrome.runtime.onMessage.addListener(({ src }) => {
+  const image = new Image();
+  image.src = src;
+
+  image.addEventListener("load", () => {
+    const color = colorThief.getColor(image);
+    console.log(color);
+  });
+});
 
 chrome.commands.onCommand.addListener(command => {
   if (command === PICK) {

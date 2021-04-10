@@ -28,7 +28,10 @@ const pickImage = (event: MouseEvent) => {
         const imageElement = document.createElement("img");
         imageElement.src = src;
 
-        chrome.runtime.sendMessage({ src })
+        chrome.storage.sync.get("isPickMode", ({ isPickMode }) => {
+          chrome.runtime.sendMessage({ src, isPickMode })
+        });
+
         setStyle(imageElement);
         fadeIn(imageElement, slideOut);
 

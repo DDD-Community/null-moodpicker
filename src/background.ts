@@ -17,6 +17,10 @@ chrome.runtime.onMessage.addListener(({ src }) => {
   });
 });
 
+chrome.runtime.onMessage.addListener(({ isPickMode }) => {
+  toggleTo(isPickMode);
+});
+
 chrome.commands.onCommand.addListener(command => {
   if (command === PICK) {
     chrome.storage.sync.get("isPickMode", ({ isPickMode }) =>
@@ -29,6 +33,7 @@ const toggleTo = (isPickMode: boolean) => {
 
   chrome.storage.sync.set({ isPickMode });
 
+  chrome.runtime.sendMessage({ isPickMode });
   chrome.tabs.query({}, (tabs: Tab[]) => {
     for (let tab of tabs) {
       chrome.tabs.sendMessage(tab.id!, { isPickMode });

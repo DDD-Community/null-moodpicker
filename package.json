@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@material-ui/core": "^4.11.3",
+    "axios": "^0.21.1",
     "colorthief": "^2.3.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",

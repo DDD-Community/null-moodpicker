@@ -1,3 +1,9 @@
+// @ts-ignore
+import ColorThief from "colorthief";
+import axios from "axios";
+
+const colorThief = new ColorThief();
+
 chrome.storage.sync.get("isPickMode", ({ isPickMode }) => {
   switchPickMode(isPickMode);
 });
@@ -20,22 +26,37 @@ const pickImage = (event: MouseEvent) => {
   if (event.target instanceof HTMLImageElement) {
     event.preventDefault();
     event.stopPropagation();
+
     if (!TIMER) {
       const { src } = event.target as HTMLImageElement;
+
       TIMER = setTimeout(() => {
         TIMER = null;
 
         const imageElement = document.createElement("img");
         imageElement.src = src;
 
-        chrome.storage.sync.get("isPickMode", ({ isPickMode }) => {
-          chrome.runtime.sendMessage({ src, isPickMode })
+        imageElement.addEventListener("load", async () => {
+          const representativeColor = colorThief.getColor(imageElement);
+          try {
+            const response = await axios.post("https://moodof.tk/api/storage-photos", {
+              uri: src,
+              representativeColor
+            }, {
+              headers: { AUTHORIZATION: "bearer 1", }
+            });
+            if (response.status !== 201) {
+              // TODO response 실패 메세지 노출
+              alert("실패");
+              return;
+            }
+            setStyle(imageElement);
+            fadeIn(imageElement, slideOut);
+            document.body.appendChild(imageElement);
+          } catch (e) {
+            console.error(e);
+          }
         });
-
-        setStyle(imageElement);
-        fadeIn(imageElement, slideOut);
-
-        document.body.appendChild(imageElement);
       }, 500);
     }
   }

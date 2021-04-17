@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { Switch } from "@material-ui/core";
+import { Button, Switch } from "@material-ui/core";
 import styled from "styled-components";
-import { Button } from "@material-ui/core";
 
 const Popup: React.FC = () => {
   const [isPickMode, setIsPickMode] = useState<boolean>();
-  const [token, setToken] = useState<String>();
+  const [isLogin, setIsLogin] = useState<boolean>();
 
   useEffect(() => {
     chrome.storage.sync.get(["isPickMode", "token"], ({ isPickMode, token }) => {
       setIsPickMode(isPickMode);
-      setToken(token);
+      token ? setIsLogin(true) : setIsLogin(false);
     });
   }, []);
+
+  chrome.runtime.onMessage.addListener(({ isPickMode, isLogin }) => {
+    isPickMode !== undefined ? setIsPickMode(isPickMode) : null;
+    isLogin !== undefined ? setIsLogin(isLogin) : null;
+  });
 
   const handleLogin = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -29,12 +33,8 @@ const Popup: React.FC = () => {
     event.preventDefault();
     event.stopPropagation();
 
-    chrome.storage.sync.remove("token", () => setToken(""));
+    chrome.storage.sync.remove("token", () => setIsLogin(false));
   }
-
-  chrome.runtime.onMessage.addListener(({ isPickMode }) => {
-    setIsPickMode(isPickMode);
-  });
 
   const Container = styled.div`
     width: 300px;
@@ -43,13 +43,13 @@ const Popup: React.FC = () => {
 
   const togglePickMode = () => {
     chrome.runtime.sendMessage({ isPickMode: !isPickMode })
+    setIsPickMode(prevState => !prevState);
   }
 
   return (
     <Container>
       <h1>현재 상태 : {isPickMode ? "켜짐" : "꺼짐"}</h1>
-      {token ? <Button onClick={handleLogout}>로그아웃</Button> : <Button onClick={handleLogin}>로그인</Button>}
-    </Container>
+      {isLogin ? <Button onClick={handleLogout}>로그아웃</Button> : <Button onClick={handleLogin}>로그인</Button>}
       <Switch checked={isPickMode} onChange={togglePickMode}/>
     </Container>
   );

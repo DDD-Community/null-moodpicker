@@ -17,7 +17,7 @@ const switchPickMode = (isPickMode: boolean) => {
 }
 
 chrome.runtime.onMessage.addListener(({ isPickMode }) => {
-  switchPickMode(isPickMode);
+  isPickMode !== undefined ? switchPickMode(isPickMode) : null;
 });
 
 let TIMER: NodeJS.Timeout | null;
@@ -35,6 +35,7 @@ const pickImage = (event: MouseEvent) => {
 
         const imageElement = document.createElement("img");
         imageElement.src = src;
+        imageElement.crossOrigin = "Anonymous"
 
         imageElement.addEventListener("load", async () => {
           const representativeColor = colorThief.getColor(imageElement);

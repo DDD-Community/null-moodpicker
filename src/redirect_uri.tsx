@@ -4,7 +4,10 @@ import ReactDOM from "react-dom";
 const RedirectUri: React.FC = () => {
   useEffect(() => {
     const token = getQueryVariable("token");
-    chrome.storage.sync.set({ token }, () => window.close());
+    chrome.storage.sync.set({ token }, () => {
+      chrome.runtime.sendMessage({ isLogin: true });
+      window.close();
+    });
   }, [])
 
   const getQueryVariable = (variable: string) => {

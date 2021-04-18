@@ -23,6 +23,7 @@ const Popup: React.FC = () => {
     event.preventDefault();
     event.stopPropagation();
 
+    // TODO to popup
     chrome.tabs.create({
       url: "https://moodof.tk/oauth2/authorize/google?redirect_uri=chrome-extension://bonajmloeaegfmnganheianffheaonom/redirect_uri.html",
       active: false

@@ -5,7 +5,7 @@ const PICK_MODE_ICON = "pick-mode.png";
 const DEFAULT_ICON = "icon.png";
 
 chrome.runtime.onMessage.addListener(({ isPickMode }) => {
-  toggleTo(isPickMode);
+  isPickMode !== undefined ? toggleTo(isPickMode) : null;
 });
 
 chrome.commands.onCommand.addListener(command => {

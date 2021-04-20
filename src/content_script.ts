@@ -1,14 +1,11 @@
-// @ts-ignore
-import ColorThief from "colorthief";
-import axios from "axios";
-
-const colorThief = new ColorThief();
+import { post } from "./api";
+import { getQueryVariable } from "./common";
 
 chrome.storage.sync.get("isPickMode", ({ isPickMode }) => {
-  switchPickMode(isPickMode);
+  addClickListenerOnBodyBy(isPickMode);
 });
 
-const switchPickMode = (isPickMode: boolean) => {
+const addClickListenerOnBodyBy = (isPickMode: boolean) => {
   if (isPickMode) {
     document.body.addEventListener("click", pickImage);
     return;
@@ -17,7 +14,7 @@ const switchPickMode = (isPickMode: boolean) => {
 }
 
 chrome.runtime.onMessage.addListener(({ isPickMode }) => {
-  switchPickMode(isPickMode);
+  isPickMode !== undefined ? addClickListenerOnBodyBy(isPickMode) : null;
 });
 
 let TIMER: NodeJS.Timeout | null;
@@ -29,37 +26,41 @@ const pickImage = (event: MouseEvent) => {
 
     if (!TIMER) {
       const { src } = event.target as HTMLImageElement;
-
-      TIMER = setTimeout(() => {
-        TIMER = null;
-
-        const imageElement = document.createElement("img");
-        imageElement.src = src;
-
-        imageElement.addEventListener("load", async () => {
-          const representativeColor = colorThief.getColor(imageElement);
-          try {
-            const response = await axios.post("https://moodof.tk/api/storage-photos", {
-              uri: src,
-              representativeColor
-            }, {
-              headers: { AUTHORIZATION: "bearer 1", }
-            });
-            if (response.status !== 201) {
-              // TODO response 실패 메세지 노출
-              alert("실패");
-              return;
-            }
-            setStyle(imageElement);
-            fadeIn(imageElement, slideOut);
-            document.body.appendChild(imageElement);
-          } catch (e) {
-            console.error(e);
-          }
-        });
-      }, 500);
+      if (src.startsWith("data") && document.domain === "www.google.com") {
+        const { href } = event.target.parentNode!.parentNode as HTMLAnchorElement;
+        const query = href.split("?")[1];
+        // @ts-ignore
+        proceedPick(getQueryVariable(query, "imgurl"));
+        return;
+      }
+      proceedPick(src);
     }
   }
+}
+
+const proceedPick = (src: string) => {
+  TIMER = setTimeout(() => {
+    TIMER = null;
+
+    const imageElement = document.createElement("img");
+    imageElement.src = src;
+
+    chrome.storage.sync.get("token", async ({ token }) => {
+      try {
+        await post("/api/storage-photos", {
+          uri: src,
+          representativeColor: "representativeColor"
+        }, token);
+        setStyle(imageElement);
+        fadeIn(imageElement, slideOut);
+        document.body.appendChild(imageElement);
+      } catch (e) {
+        console.log(e.response);
+        alert("요청 실패 " + e.response.data.messages);
+      }
+    });
+  }, 500);
+
 }
 
 const setStyle = ({ style }: HTMLImageElement) => {

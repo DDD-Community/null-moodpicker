@@ -3,21 +3,30 @@ import ReactDOM from "react-dom";
 import { Button, Switch } from "@material-ui/core";
 import styled from "styled-components";
 
+const Container = styled.div`
+  width: 300px;
+  display: flex;
+`;
+
 const Popup: React.FC = () => {
-  const [isPickMode, setIsPickMode] = useState<boolean>();
-  const [isLogin, setIsLogin] = useState<boolean>();
+  const [isPickMode, setIsPickMode] = useState(false);
+  const [isLogin, setIsLogin] = useState(false);
 
   useEffect(() => {
+    const handleMessages = ({ isPickMode, isLogin }: { isPickMode: boolean, isLogin: boolean }) => {
+      isPickMode !== undefined ? setIsPickMode(isPickMode) : null;
+      isLogin !== undefined ? setIsLogin(isLogin) : null;
+    };
+
+    chrome.runtime.onMessage.addListener(handleMessages);
+
     chrome.storage.sync.get(["isPickMode", "token"], ({ isPickMode, token }) => {
       setIsPickMode(isPickMode);
       token ? setIsLogin(true) : setIsLogin(false);
     });
-  }, []);
 
-  chrome.runtime.onMessage.addListener(({ isPickMode, isLogin }) => {
-    isPickMode !== undefined ? setIsPickMode(isPickMode) : null;
-    isLogin !== undefined ? setIsLogin(isLogin) : null;
-  });
+    return () => chrome.runtime.onMessage.removeListener(handleMessages);
+  }, []);
 
   const handleLogin = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -26,7 +35,7 @@ const Popup: React.FC = () => {
     // TODO to popup
     chrome.tabs.create({
       url: "https://moodof.tk/oauth2/authorize/google?redirect_uri=chrome-extension://bonajmloeaegfmnganheianffheaonom/redirect_uri.html",
-      active: false
+      active: true
     });
   }
 
@@ -36,11 +45,6 @@ const Popup: React.FC = () => {
 
     chrome.storage.sync.remove("token", () => setIsLogin(false));
   }
-
-  const Container = styled.div`
-    width: 300px;
-    display: flex;
-  `;
 
   const togglePickMode = () => {
     chrome.runtime.sendMessage({ isPickMode: !isPickMode })

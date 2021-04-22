@@ -1,8 +1,10 @@
 import { post } from "./api";
 import { getQueryVariable } from "./common";
 
-chrome.storage.sync.get("isPickMode", ({ isPickMode }) => {
-  addClickListenerOnBodyBy(isPickMode);
+chrome.storage.sync.get(["isPickMode", "token"], ({ isPickMode, token }) => {
+  if (token) {
+    addClickListenerOnBodyBy(isPickMode);
+  }
 });
 
 const addClickListenerOnBodyBy = (isPickMode: boolean) => {
@@ -14,7 +16,9 @@ const addClickListenerOnBodyBy = (isPickMode: boolean) => {
 }
 
 chrome.runtime.onMessage.addListener(({ isPickMode }) => {
-  isPickMode !== undefined ? addClickListenerOnBodyBy(isPickMode) : null;
+  if (isPickMode !== undefined) {
+    addClickListenerOnBodyBy(isPickMode);
+  }
 });
 
 let TIMER: NodeJS.Timeout | null;

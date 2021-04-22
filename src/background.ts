@@ -5,13 +5,19 @@ const PICK_MODE_ICON = "pick-mode.png";
 const DEFAULT_ICON = "icon.png";
 
 chrome.runtime.onMessage.addListener(({ isPickMode }) => {
-  isPickMode !== undefined ? toggleTo(isPickMode) : null;
+  if (isPickMode !== undefined) {
+    toggleTo(isPickMode);
+  }
 });
 
 chrome.commands.onCommand.addListener(command => {
   if (command === PICK) {
-    chrome.storage.sync.get("isPickMode", ({ isPickMode }) =>
-      isPickMode ? toggleTo(false) : toggleTo(true));
+    chrome.storage.sync.get(["isPickMode", "token"], ({ isPickMode, token }) => {
+      if (!token) {
+        return;
+      }
+      isPickMode ? toggleTo(false) : toggleTo(true);
+    });
   }
 });
 

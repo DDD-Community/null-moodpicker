@@ -10,8 +10,6 @@ module.exports = {
     background: path.join(srcDir, 'background.ts'),
     content_script: path.join(srcDir, 'content_script.ts'),
     redirect_uri: path.join(srcDir, 'redirect_uri.tsx'),
-    api: path.join(srcDir, 'api.ts'),
-    common: path.join(srcDir, 'common.ts'),
   },
   output: {
     path: path.join(__dirname, "../dist/js"),
@@ -29,6 +27,32 @@ module.exports = {
         test: /\.tsx?$/,
         use: "ts-loader",
         exclude: /node_modules/,
+      },
+      {
+        test: /\.(jpg|jpeg|gif|png|svg|ico)?$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 10000,
+              fallback: 'file-loader',
+              name: '../images/[name].[ext]',
+            },
+          },
+        ],
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 10000,
+              fallback: 'file-loader',
+              name: '../fonts/[name].[ext]',
+            },
+          },
+        ],
       },
     ],
   },

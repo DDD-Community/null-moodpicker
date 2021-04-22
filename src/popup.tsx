@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { Button, Switch } from "@material-ui/core";
-import styled from "styled-components";
+import LoginPage from "./pages/LoginPage";
 
-const Container = styled.div`
-  width: 300px;
-  display: flex;
-`;
 
 const Popup: React.FC = () => {
   const [isPickMode, setIsPickMode] = useState(false);
@@ -56,11 +51,12 @@ const Popup: React.FC = () => {
   }
 
   return (
-    <Container>
-      {isLogin ? <h1>현재 상태 : {isPickMode ? "켜짐" : "꺼짐"}</h1> : null}
-      {isLogin ? <Button onClick={handleLogout}>로그아웃</Button> : <Button onClick={handleLogin}>로그인</Button>}
-      {isLogin ? <Switch checked={isPickMode} onChange={togglePickMode}/> : null}
-    </Container>
+    <>
+      {isLogin ? <LoginPage/> : null}
+      {/*{isLogin ? <h1>현재 상태 : {isPickMode ? "켜짐" : "꺼짐"}</h1> : null}*/}
+      {/*{isLogin ? <Button onClick={handleLogout}>로그아웃</Button> : <Button onClick={handleLogin}>로그인</Button>}*/}
+      {/*{isLogin ? <Switch checked={isPickMode} onChange={togglePickMode}/> : null}*/}
+    </>
   );
 }
 

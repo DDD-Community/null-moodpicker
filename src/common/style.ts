@@ -1,0 +1,1 @@
+export const GRAY_100 = "#F5F5F5", GRAY_500 = "#9E9E9E", GRAY_900 = "#212121", COOL_GRAY_500 = "#121619";

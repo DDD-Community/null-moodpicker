@@ -23,6 +23,7 @@ const Popup: React.FC = () => {
     chrome.storage.sync.get(["isPickMode", "token"], ({ isPickMode, token }) => {
       setIsPickMode(isPickMode);
       token ? setIsLogin(true) : setIsLogin(false);
+      chrome.runtime.sendMessage({ isPickMode });
     });
 
     return () => chrome.runtime.onMessage.removeListener(handleMessages);
@@ -43,7 +44,10 @@ const Popup: React.FC = () => {
     event.preventDefault();
     event.stopPropagation();
 
-    chrome.storage.sync.remove("token", () => setIsLogin(false));
+    chrome.storage.sync.remove("token", () => {
+      setIsLogin(false);
+      chrome.runtime.sendMessage({ isPickMode: false });
+    });
   }
 
   const togglePickMode = () => {
@@ -53,9 +57,9 @@ const Popup: React.FC = () => {
 
   return (
     <Container>
-      <h1>현재 상태 : {isPickMode ? "켜짐" : "꺼짐"}</h1>
+      {isLogin ? <h1>현재 상태 : {isPickMode ? "켜짐" : "꺼짐"}</h1> : null}
       {isLogin ? <Button onClick={handleLogout}>로그아웃</Button> : <Button onClick={handleLogin}>로그인</Button>}
-      <Switch checked={isPickMode} onChange={togglePickMode}/>
+      {isLogin ? <Switch checked={isPickMode} onChange={togglePickMode}/> : null}
     </Container>
   );
 }

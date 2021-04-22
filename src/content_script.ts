@@ -63,8 +63,8 @@ const proceedPick = (src: string) => {
         alert("요청 실패 " + e.response.data.messages);
       }
     });
+    chrome.runtime.sendMessage({ isPickMode: false });
   }, 500);
-
 }
 
 const setStyle = ({ style }: HTMLImageElement) => {

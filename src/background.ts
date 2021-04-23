@@ -4,7 +4,39 @@ const PICK = "pick";
 const PICK_MODE_ICON = "pick-mode.png";
 const DEFAULT_ICON = "icon.png";
 
-chrome.runtime.onMessage.addListener(({ isPickMode }) => {
+chrome.storage.sync.get(["token", "isPickMode"], ({ token, isPickMode }) => {
+  toggleTo(!!isPickMode);
+  if (token) {
+    chrome.contextMenus.create({
+      "id": "logout",
+      "title": "무드피커에서 로그아웃",
+      "contexts": ["browser_action"],
+      "onclick": () => {
+        chrome.storage.sync.remove("token", () => {
+          chrome.runtime.sendMessage({ isPickMode: false, isLogin: false });
+          chrome.contextMenus.remove("logout");
+          toggleTo(false);
+        });
+      }
+    });
+  }
+})
+
+chrome.runtime.onMessage.addListener(({ isPickMode, isLogin }) => {
+  if (isLogin === true) {
+    chrome.contextMenus.create({
+      "id": "logout",
+      "title": "무드피커에서 로그아웃",
+      "contexts": ["browser_action"],
+      "onclick": () => {
+        chrome.storage.sync.remove("token", () => {
+          chrome.runtime.sendMessage({ isPickMode: false, isLogin: false });
+          chrome.contextMenus.remove("logout");
+          toggleTo(false);
+        });
+      }
+    });
+  }
   if (isPickMode !== undefined) {
     toggleTo(isPickMode);
   }

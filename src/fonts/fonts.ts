@@ -7,6 +7,12 @@ import Roboto300 from "./roboto-v27-latin-300.woff2";
 import Roboto from "./roboto-v27-latin-regular.woff2";
 // @ts-ignore
 import Roboto500 from "./roboto-v27-latin-500.woff2";
+// @ts-ignore
+import NotoSans300 from "./noto-sans-kr-v13-latin-300.woff2";
+// @ts-ignore
+import NotoSans from "./noto-sans-kr-v13-latin-regular.woff2";
+// @ts-ignore
+import NotoSans500 from "./noto-sans-kr-v13-latin-500.woff2";
 
 export default createGlobalStyle`
   @font-face {
@@ -35,5 +41,26 @@ export default createGlobalStyle`
     font-style: normal;
     font-weight: 300;
     src: local('Roboto-500'), url(${Roboto500}) format('woff2');
+  }
+
+  @font-face {
+    font-family: 'NotoSans300';
+    font-style: normal;
+    font-weight: 300;
+    src: local('NotoSans-300'), url(${NotoSans300}) format('woff2');
+  }
+
+  @font-face {
+    font-family: 'NotoSans';
+    font-style: normal;
+    font-weight: 300;
+    src: local('NotoSans'), url(${NotoSans}) format('woff2');
+  }
+
+  @font-face {
+    font-family: 'NotoSans500';
+    font-style: normal;
+    font-weight: 300;
+    src: local('NotoSans-500'), url(${NotoSans500}) format('woff2');
   }
 `;

@@ -20,7 +20,7 @@ chrome.storage.sync.get(["token", "isPickMode"], ({ token, isPickMode }) => {
       }
     });
   }
-})
+});
 
 chrome.runtime.onMessage.addListener(({ isPickMode, isLogin }) => {
   if (isLogin === true) {
@@ -65,3 +65,11 @@ const toggleTo = (isPickMode: boolean) => {
     }
   });
 }
+
+// chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+//   if (changeInfo.status === "complete") {
+//     if (tab.url?.includes("redirect_uri.html")) {
+//       setTimeout(() => chrome.tabs.remove(tabId), 1000);
+//     }
+//   }
+// });

@@ -105,9 +105,14 @@ const LoginPage: React.FC = () => {
     event.preventDefault();
     event.stopPropagation();
 
-    chrome.tabs.create({
+    chrome.windows.create({
+      type: "popup",
       url: "https://moodof.tk/oauth2/authorize/google?redirect_uri=chrome-extension://bonajmloeaegfmnganheianffheaonom/redirect_uri.html",
-      active: true
+      focused: true,
+      width: 480,
+      height: 640,
+      top: Math.round(screen.availHeight / 2 - 320),
+      left: Math.round(screen.availWidth / 2 - 240),
     });
   }
 

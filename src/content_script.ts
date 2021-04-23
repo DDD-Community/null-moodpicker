@@ -1,5 +1,5 @@
-import { post } from "./api";
-import { getQueryVariable } from "./common";
+import { post } from "./common/api";
+import { getQueryVariable } from "./common/common";
 
 chrome.storage.sync.get(["isPickMode", "token"], ({ isPickMode, token }) => {
   if (token) {

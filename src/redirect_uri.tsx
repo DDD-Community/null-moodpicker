@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
-import { getQueryVariable } from "./common";
+import { getQueryVariable } from "./common/common";
 
 const RedirectUri: React.FC = () => {
   useEffect(() => {

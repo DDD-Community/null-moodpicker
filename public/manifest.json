@@ -31,8 +31,8 @@
   "commands": {
     "pick": {
       "suggested_key": {
-        "default": "Ctrl+Shift+Y",
-        "mac": "Command+Shift+Y"
+        "default": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S"
       },
       "description": "Toggle pick"
     }
@@ -41,7 +41,8 @@
     "activeTab",
     "storage",
     "<all_urls>",
-    "tabs"
+    "tabs",
+    "contextMenus"
   ],
   "web_accessible_resources": [
     "redirect_uri.html"

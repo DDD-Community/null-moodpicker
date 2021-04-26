@@ -6,6 +6,7 @@ import { loginState } from "../atoms/atom";
 import { COLOR } from "../common/style";
 import { createStyles, Theme, withStyles } from "@material-ui/core/styles";
 import { Switch, SwitchClassKey, SwitchProps } from "@material-ui/core";
+import { get } from "../common/api";
 
 const Container = styled.div`
   width: 320px;
@@ -235,10 +236,35 @@ const ProfileContainer = styled.div`
   height: 60px;
 `;
 
+const ProfileImage = styled.img`
+  margin-left: 16px;
+  margin-top: 10px;
+`;
+
+const ProfileInfoContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const Nickname = styled.p`
+  font-family: "Roboto", serif;
+  font-size: 14px;
+  line-height: 22px;
+  color: ${COLOR.COOL_GRAY["100"]};
+`
+
+const Email = styled.p`
+  font-family: "Roboto", serif;
+  font-size: 12px;
+  line-height: 18px;
+  color: ${COLOR.GRAY["500"]};
+`;
+
 const IndexPage: React.FC = () => {
   const setIsLogin = useSetRecoilState(loginState);
   const [isPickMode, setIsPickMode] = useState(false);
   const [images, setImages] = useState<Array<string>>([])
+  const [user, setUser] = useState({});
 
   useEffect(() => {
     const handleMessages = ({ isPickMode, isLogin }: { isPickMode: boolean, isLogin: boolean }) => {
@@ -248,16 +274,21 @@ const IndexPage: React.FC = () => {
 
     chrome.runtime.onMessage.addListener(handleMessages);
 
-    chrome.storage.sync.get(["isPickMode", "token", "images"], ({ isPickMode, token, images }) => {
+    chrome.storage.sync.get(["isPickMode", "token", "images"], async ({ isPickMode, token, images }) => {
       setIsPickMode(isPickMode);
       token ? setIsLogin(true) : setIsLogin(false);
       chrome.runtime.sendMessage({ isPickMode });
       setImages(images.reverse());
+      try {
+        const { data } = await get("/api/me", token);
+        setUser(data);
+      } catch (e) {
+        console.error(e);
+      }
     });
 
     return () => chrome.runtime.onMessage.removeListener(handleMessages);
   }, []);
-
   const togglePickMode = () => {
     chrome.runtime.sendMessage({ isPickMode: !isPickMode })
     setIsPickMode(prevState => !prevState);
@@ -291,7 +322,9 @@ const IndexPage: React.FC = () => {
             )}
           </SaveImagesContainer>}
         <ProfileContainer>
-
+          <ProfileImage/>
+          <Nickname>{user}</Nickname>
+          <Email>{user}</Email>
         </ProfileContainer>
       </MainContainer>
     </Container>

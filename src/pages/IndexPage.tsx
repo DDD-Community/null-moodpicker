@@ -6,6 +6,9 @@ import { loginState } from "../atoms/atom";
 import { COLOR } from "../common/style";
 import { createStyles, Theme, withStyles } from "@material-ui/core/styles";
 import { Switch, SwitchClassKey, SwitchProps } from "@material-ui/core";
+import { get } from "../common/api";
+// @ts-ignore
+import StorageIcon from "../images/storage.png";
 
 const Container = styled.div`
   width: 320px;
@@ -18,9 +21,9 @@ const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 16px 0;
+  padding: 16px 0 0 0;
 
-  height: 440px;
+  height: 424px;
   background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%), #FFFFFF;
 `;
 
@@ -31,12 +34,11 @@ const ActionContainer = styled.div`
   padding: 0;
 
   width: 320px;
-  height: 94px;
+  height: 100px;
 
   order: 0;
 
   border-bottom: 1px solid ${COLOR.GRAY["200"]};
-  box-sizing: border-box;
   border-radius: 2px;
 `
 
@@ -184,13 +186,116 @@ const PickerActivationDescription = styled.p`
   margin-top: 2px;
 `;
 
-const ImageContainer = styled.div`
-  height: 300px;
+const EmptyImageContainer = styled.div`
+  width: 288px;
+  height: 105px;
+  margin-left: 16px;
+  margin-top: 3px;
+
+  background: ${COLOR.GRAY["50"]};
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
+
+const EmptyImageDescription = styled.p`
+  font-family: "NotoSans", serif;
+  font-size: 12px;
+  line-height: 18px;
+
+  color: ${COLOR.GRAY["500"]};
+`;
+
+const SaveImagesContainer = styled.div`
+  width: 320px;
+  height: 278px;
+  padding: 8px 16px 0 16px;
+  flex-wrap: wrap;
+  overflow: scroll;
+`;
+
+const SavedImage = styled.p`
+  font-family: "NotoSans500", serif;
+  font-size: 12px;
+  line-height: 18px;
+
+  color: ${COLOR.OVERLAY_DARK["40"]};
+`;
+
+const PickedImage = styled.img`
+  margin-right: 8px;
+  margin-bottom: 8px;
+  width: 140px;
+  height: 105px;
+  object-fit: cover;
+`;
+
+const ProfileContainer = styled.div`
+  display: flex;
+  width: 320px;
+  height: 60px;
+
+  border-top: 1px solid ${COLOR.GRAY["200"]};
+
+  transition: background-color 150ms linear;
+
+  &:hover {
+    background-color: ${COLOR.GRAY["100"]};
+  }
+`;
+
+const ProfileImage = styled.img`
+  margin-left: 16px;
+  margin-top: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+`;
+
+const ProfileInfoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 16px;
+  margin-top: 11px;
+  justify-content: flex-start;
+`;
+
+const Nickname = styled.p`
+  font-family: "Roboto", serif;
+  font-size: 14px;
+  line-height: 22px;
+  color: ${COLOR.COOL_GRAY["100"]};
+  margin: 0;
+`
+
+const Email = styled.p`
+  font-family: "Roboto", serif;
+  font-size: 12px;
+  line-height: 18px;
+  color: ${COLOR.GRAY["500"]};
+  margin: 0 0 12px 0;
+`;
+
+const ImageStorageIcon = styled.img`
+  width: 24px;
+  height: 24px;
+  margin: 18px 16px 18px 80px;
+  float: right;
+  opacity: 0.8;
+`;
+
+type User = {
+  nickname: string,
+  email: string,
+  profileUrl: string
+}
 
 const IndexPage: React.FC = () => {
   const setIsLogin = useSetRecoilState(loginState);
   const [isPickMode, setIsPickMode] = useState(false);
+  const [images, setImages] = useState<Array<string>>([])
+  const [user, setUser] = useState<User>({ email: "", nickname: "", profileUrl: "" });
 
   useEffect(() => {
     const handleMessages = ({ isPickMode, isLogin }: { isPickMode: boolean, isLogin: boolean }) => {
@@ -200,10 +305,18 @@ const IndexPage: React.FC = () => {
 
     chrome.runtime.onMessage.addListener(handleMessages);
 
-    chrome.storage.sync.get(["isPickMode", "token"], ({ isPickMode, token }) => {
+    chrome.storage.sync.get(["isPickMode", "token", "images"], async ({ isPickMode, token, images }) => {
       setIsPickMode(isPickMode);
       token ? setIsLogin(true) : setIsLogin(false);
       chrome.runtime.sendMessage({ isPickMode });
+      setImages(images.reverse());
+      try {
+        const { data } = await get("/api/me", token);
+        setUser(data);
+        console.log(data);
+      } catch (e) {
+        console.error(e);
+      }
     });
 
     return () => chrome.runtime.onMessage.removeListener(handleMessages);
@@ -212,6 +325,10 @@ const IndexPage: React.FC = () => {
   const togglePickMode = () => {
     chrome.runtime.sendMessage({ isPickMode: !isPickMode })
     setIsPickMode(prevState => !prevState);
+  }
+
+  const handleProfile = () => {
+    chrome.tabs.create({ url: "https://moodof.tk" })
   }
 
   return (
@@ -231,6 +348,25 @@ const IndexPage: React.FC = () => {
           </PickerActivationContainer>
           <PickerActivationDescription>피커 활성화로 이미지를 클릭하여 저장하세요.</PickerActivationDescription>
         </ActionContainer>
+        {!images ?
+          <EmptyImageContainer>
+            <EmptyImageDescription>저장된 이미지가 없습니다.</EmptyImageDescription>
+          </EmptyImageContainer> :
+          <SaveImagesContainer>
+            <SavedImage>저장된 이미지</SavedImage>
+            {images.map((image, index) =>
+              <PickedImage key={index} src={image}/>
+            )}
+            <SavedImage style={{ margin: "12px 0 8px 44px" }}>최근 저장된 10개의 이미지가 표시됩니다.</SavedImage>
+          </SaveImagesContainer>}
+        <ProfileContainer onClick={handleProfile}>
+          <ProfileImage src={user.profileUrl}/>
+          <ProfileInfoContainer>
+            <Nickname>{user.nickname}</Nickname>
+            <Email>{user.email}</Email>
+          </ProfileInfoContainer>
+          <ImageStorageIcon src={StorageIcon}/>
+        </ProfileContainer>
       </MainContainer>
     </Container>
   );

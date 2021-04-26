@@ -1,5 +1,4 @@
 import { post } from "./common/api";
-import { getQueryVariable } from "./common/common";
 
 chrome.storage.sync.get(["isPickMode", "token"], ({ isPickMode, token }) => {
   if (token) {
@@ -30,41 +29,37 @@ const pickImage = (event: MouseEvent) => {
 
     if (!TIMER) {
       const { src } = event.target as HTMLImageElement;
-      if (src.startsWith("data") && document.domain === "www.google.com") {
-        const { href } = event.target.parentNode!.parentNode as HTMLAnchorElement;
-        const query = href.split("?")[1];
-        // @ts-ignore
-        proceedPick(getQueryVariable(query, "imgurl"));
-        return;
-      }
-      proceedPick(src);
+      TIMER = setTimeout(() => {
+        TIMER = null;
+
+        const imageElement = document.createElement("img");
+        imageElement.src = src;
+
+        chrome.storage.sync.get("token", async ({ token }) => {
+          try {
+            await post("/api/storage-photos", {
+              uri: src,
+              representativeColor: "representativeColor"
+            }, token);
+            setStyle(imageElement);
+            fadeIn(imageElement, slideOut);
+            document.body.appendChild(imageElement);
+            chrome.storage.sync.get("images", ({ images }) => {
+              if (images) {
+                chrome.storage.sync.set({ images: images.concat(src).slice(-10) });
+                return;
+              }
+              chrome.storage.sync.set({ images: [src] })
+            });
+          } catch (e) {
+            console.log(e.response);
+            alert("요청 실패 " + e.response.data.messages);
+          }
+          chrome.runtime.sendMessage({ isPickMode: false });
+        });
+      }, 500);
     }
   }
-}
-
-const proceedPick = (src: string) => {
-  TIMER = setTimeout(() => {
-    TIMER = null;
-
-    const imageElement = document.createElement("img");
-    imageElement.src = src;
-
-    chrome.storage.sync.get("token", async ({ token }) => {
-      try {
-        await post("/api/storage-photos", {
-          uri: src,
-          representativeColor: "representativeColor"
-        }, token);
-        setStyle(imageElement);
-        fadeIn(imageElement, slideOut);
-        document.body.appendChild(imageElement);
-      } catch (e) {
-        console.log(e.response);
-        alert("요청 실패 " + e.response.data.messages);
-      }
-    });
-    chrome.runtime.sendMessage({ isPickMode: false });
-  }, 500);
 }
 
 const setStyle = ({ style }: HTMLImageElement) => {

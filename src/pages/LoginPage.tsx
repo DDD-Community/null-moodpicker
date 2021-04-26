@@ -4,7 +4,7 @@ import { COLOR } from "../common/style";
 // @ts-ignore
 import GoogleLogin from "../images/Google-Login.png";
 // @ts-ignore
-import Moodof from "../images/Moodof.png";
+import MoodofIcon from "../images/Moodof-Black.png";
 import { useSetRecoilState } from "recoil";
 import { loginState } from "../atoms/atom";
 import MoodofHeader from "../components/MoodofHeader";
@@ -19,27 +19,10 @@ const Container = styled.div`
 const ButtonContainer = styled.div`
   justify-content: center;
   align-items: center;
+  padding-top: 8px;
 `;
 
-const LoginButton = styled.button`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-
-  width: 240px;
-  height: 40px;
-  margin-top: 16px;
-  margin-left: 40px;
-  margin-right: 40px;
-  background: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
-  border-radius: 2px;
-  padding: 0;
-`;
-
-const MoodofButton = styled.button`
+const ActionButton = styled.button`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -50,11 +33,16 @@ const MoodofButton = styled.button`
   margin-top: 8px;
   margin-left: 40px;
   margin-right: 40px;
-  background: #121619;
+  background: #FFFFFF;
+  transition: background-color 150ms linear;
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   border-radius: 2px;
   padding: 0;
+
+  &:hover {
+    background-color: ${COLOR.GRAY["100"]};
+  }
 `;
 
 const ButtonIcon = styled.img`
@@ -64,7 +52,7 @@ const ButtonIcon = styled.img`
   margin-right: 24px;
 `;
 
-const LoginButtonDescription = styled.p`
+const ButtonDescription = styled.p`
   font-family: "Roboto", serif;
   font-size: 14px;
   line-height: 16px;
@@ -74,15 +62,6 @@ const LoginButtonDescription = styled.p`
   color: ${COLOR.COOL_GRAY["100"]};
 `;
 
-const MoodofButtonDescription = styled.p`
-  font-family: "Roboto", serif;
-  font-size: 14px;
-  line-height: 16px;
-  font-weight: normal;
-  font-style: normal;
-  letter-spacing: -0.02em;
-  color: #FFFFFF;
-`;
 
 const LoginPage: React.FC = () => {
   const setIsLogin = useSetRecoilState(loginState);
@@ -130,14 +109,14 @@ const LoginPage: React.FC = () => {
     <Container>
       <MoodofHeader/>
       <ButtonContainer>
-        <LoginButton onClick={handleLogin}>
+        <ActionButton onClick={handleLogin}>
           <ButtonIcon src={GoogleLogin}/>
-          <LoginButtonDescription>Google 계정으로 로그인</LoginButtonDescription>
-        </LoginButton>
-        <MoodofButton onClick={handleMoodof}>
-          <ButtonIcon src={Moodof}/>
-          <MoodofButtonDescription>무드오브 페이지 바로가기</MoodofButtonDescription>
-        </MoodofButton>
+          <ButtonDescription>Google 계정으로 로그인</ButtonDescription>
+        </ActionButton>
+        <ActionButton onClick={handleMoodof}>
+          <ButtonIcon src={MoodofIcon}/>
+          <ButtonDescription>무드오브 페이지 바로가기</ButtonDescription>
+        </ActionButton>
       </ButtonContainer>
     </Container>
   );

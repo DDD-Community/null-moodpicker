@@ -20,7 +20,7 @@ const MainContainer = styled.div`
   align-items: flex-start;
   padding: 16px 0;
 
-  height: 440px;
+  height: 424px;
   background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%), #FFFFFF;
 `;
 
@@ -184,13 +184,61 @@ const PickerActivationDescription = styled.p`
   margin-top: 2px;
 `;
 
-const ImageContainer = styled.div`
-  height: 300px;
+const SavedImage = styled.p`
+  font-family: "NotoSans500", serif;
+  font-size: 12px;
+  line-height: 18px;
+
+  color: ${COLOR.OVERLAY_DARK["40"]};
+  margin: 19px 0 0 16px;
+`;
+
+const EmptyImageContainer = styled.div`
+  width: 288px;
+  height: 105px;
+  margin-left: 16px;
+  margin-top: 3px;
+
+  background: ${COLOR.GRAY["50"]};
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const EmptyImageDescription = styled.p`
+  font-family: "NotoSans", serif;
+  font-size: 12px;
+  line-height: 18px;
+
+  color: ${COLOR.GRAY["500"]};
+`;
+
+const SaveImagesContainer = styled.div`
+  width: 320px;
+  height: 226px;
+  padding: 8px 16px 0 16px;
+  flex-wrap: wrap;
+  overflow: scroll;
+`;
+
+const PickedImage = styled.img`
+  margin-right: 8px;
+  margin-bottom: 8px;
+  width: 140px;
+  height: 105px;
+  object-fit: cover;
+`;
+
+const ProfileContainer = styled.div`
+  width: 320px;
+  height: 60px;
 `;
 
 const IndexPage: React.FC = () => {
   const setIsLogin = useSetRecoilState(loginState);
   const [isPickMode, setIsPickMode] = useState(false);
+  const [images, setImages] = useState<Array<string>>([])
 
   useEffect(() => {
     const handleMessages = ({ isPickMode, isLogin }: { isPickMode: boolean, isLogin: boolean }) => {
@@ -200,10 +248,11 @@ const IndexPage: React.FC = () => {
 
     chrome.runtime.onMessage.addListener(handleMessages);
 
-    chrome.storage.sync.get(["isPickMode", "token"], ({ isPickMode, token }) => {
+    chrome.storage.sync.get(["isPickMode", "token", "images"], ({ isPickMode, token, images }) => {
       setIsPickMode(isPickMode);
       token ? setIsLogin(true) : setIsLogin(false);
       chrome.runtime.sendMessage({ isPickMode });
+      setImages(images.reverse());
     });
 
     return () => chrome.runtime.onMessage.removeListener(handleMessages);
@@ -231,6 +280,19 @@ const IndexPage: React.FC = () => {
           </PickerActivationContainer>
           <PickerActivationDescription>피커 활성화로 이미지를 클릭하여 저장하세요.</PickerActivationDescription>
         </ActionContainer>
+        <SavedImage>저장된 이미지</SavedImage>
+        {!images ?
+          <EmptyImageContainer>
+            <EmptyImageDescription>저장된 이미지가 없습니다.</EmptyImageDescription>
+          </EmptyImageContainer> :
+          <SaveImagesContainer>
+            {images.map((image, index) =>
+              <PickedImage key={index} src={image}/>
+            )}
+          </SaveImagesContainer>}
+        <ProfileContainer>
+
+        </ProfileContainer>
       </MainContainer>
     </Container>
   );

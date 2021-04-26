@@ -1,8 +1,8 @@
 import Tab = chrome.tabs.Tab;
 
 const PICK = "pick";
-const PICK_MODE_ICON = "pick-mode.png";
-const DEFAULT_ICON = "icon.png";
+const PICK_MODE_ICON = "pickerIcon-active.png";
+const DEFAULT_ICON = "pickerIcon-default.png";
 
 chrome.storage.sync.get(["token", "isPickMode"], ({ token, isPickMode }) => {
   toggleTo(!!isPickMode);
@@ -66,10 +66,3 @@ const toggleTo = (isPickMode: boolean) => {
   });
 }
 
-// chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-//   if (changeInfo.status === "complete") {
-//     if (tab.url?.includes("redirect_uri.html")) {
-//       setTimeout(() => chrome.tabs.remove(tabId), 1000);
-//     }
-//   }
-// });

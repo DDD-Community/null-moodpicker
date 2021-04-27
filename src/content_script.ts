@@ -1,4 +1,5 @@
 import { post } from "./common/api";
+import { imageUpload } from "./common/common";
 
 chrome.storage.sync.get(["isPickMode", "token"], ({ isPickMode, token }) => {
   if (token) {
@@ -37,20 +38,17 @@ const pickImage = (event: MouseEvent) => {
 
         chrome.storage.sync.get("token", async ({ token }) => {
           try {
-            await post("/api/storage-photos", {
-              uri: src,
-              representativeColor: "representativeColor"
-            }, token);
-            setStyle(imageElement);
-            fadeIn(imageElement, slideOut);
-            document.body.appendChild(imageElement);
-            chrome.storage.sync.get("images", ({ images }) => {
-              if (images) {
-                chrome.storage.sync.set({ images: images.concat(src).slice(-10) });
-                return;
-              }
-              chrome.storage.sync.set({ images: [src] })
-            });
+            if (src.startsWith("data:")) {
+              const uri = await imageUpload(src, token);
+
+              await postImage(uri, token);
+              proceedPick(imageElement, src);
+              return;
+            }
+
+            await postImage(src, token);
+            proceedPick(imageElement, src);
+
           } catch (e) {
             console.log(e.response);
             alert("요청 실패 " + e.response.data.messages);
@@ -60,6 +58,27 @@ const pickImage = (event: MouseEvent) => {
       }, 500);
     }
   }
+}
+
+const postImage = async (src: string, token: string) => {
+  await post("/api/storage-photos", {
+    uri: src,
+    representativeColor: "representativeColor"
+  }, token);
+}
+
+const proceedPick = (imageElement: HTMLImageElement, src: string) => {
+  setStyle(imageElement);
+  fadeIn(imageElement, slideOut);
+  document.body.appendChild(imageElement);
+  chrome.storage.local.get("images", ({ images }) => {
+    if (images) {
+      chrome.storage.local.set({ images: images.concat(src).slice(-10) });
+      return;
+    }
+    chrome.storage.local.set({ images: [src] });
+  });
+  chrome.runtime.sendMessage({ isPickMode: false });
 }
 
 const setStyle = ({ style }: HTMLImageElement) => {

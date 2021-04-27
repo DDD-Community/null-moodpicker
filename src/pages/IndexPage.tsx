@@ -305,19 +305,22 @@ const IndexPage: React.FC = () => {
 
     chrome.runtime.onMessage.addListener(handleMessages);
 
-    chrome.storage.sync.get(["isPickMode", "token", "images"], async ({ isPickMode, token, images }) => {
+    chrome.storage.sync.get(["isPickMode", "token"], async ({ isPickMode, token }) => {
       setIsPickMode(isPickMode);
       token ? setIsLogin(true) : setIsLogin(false);
       chrome.runtime.sendMessage({ isPickMode });
-      setImages(images.reverse());
       try {
         const { data } = await get("/api/me", token);
         setUser(data);
-        console.log(data);
       } catch (e) {
         console.error(e);
       }
     });
+
+    chrome.storage.local.get("images", ({ images }) => {
+        setImages(images.reverse());
+      }
+    )
 
     return () => chrome.runtime.onMessage.removeListener(handleMessages);
   }, []);

@@ -344,7 +344,9 @@ const IndexPage: React.FC = () => {
     });
 
     chrome.storage.local.get("images", ({ images }) => {
-        setImages(images.reverse());
+        if (images) {
+          setImages(images.reverse());
+        }
       }
     )
 

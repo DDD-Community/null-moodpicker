@@ -213,22 +213,44 @@ const SaveImagesContainer = styled.div`
   padding: 8px 16px 0 16px;
   flex-wrap: wrap;
   overflow: scroll;
+  display: flex;
 `;
 
 const SavedImage = styled.p`
   font-family: "NotoSans500", serif;
   font-size: 12px;
   line-height: 18px;
-
+  margin-right: 200px;
   color: ${COLOR.OVERLAY_DARK["40"]};
 `;
 
-const PickedImage = styled.img`
+const ImageContainer = styled.div`
+  width: 140px;
+  height: 105px;
   margin-right: 8px;
   margin-bottom: 8px;
+
+  :hover span {
+    display: inline;
+  }
+`;
+
+const PickedImage = styled.img`
   width: 140px;
   height: 105px;
   object-fit: cover;
+`;
+
+const ImageSize = styled.span`
+  display: none;
+  position: relative;
+  top: -19px;
+  left: 0;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 4px;
+  background-color: rgba(0, 0, 0, 0.5);
+  font-size: 10px;
+  line-height: 14px;
 `;
 
 const ProfileContainer = styled.div`
@@ -294,7 +316,11 @@ type User = {
 const IndexPage: React.FC = () => {
   const setIsLogin = useSetRecoilState(loginState);
   const [isPickMode, setIsPickMode] = useState(false);
-  const [images, setImages] = useState<Array<string>>([])
+  const [images, setImages] = useState<Array<{
+    src: string;
+    width: number;
+    height: number;
+  }>>([])
   const [user, setUser] = useState<User>({ email: "", nickname: "", profileUrl: "" });
 
   useEffect(() => {
@@ -358,9 +384,12 @@ const IndexPage: React.FC = () => {
           <SaveImagesContainer>
             <SavedImage>저장된 이미지</SavedImage>
             {images.map((image, index) =>
-              <PickedImage key={index} src={image}/>
+              <ImageContainer>
+                <PickedImage key={index} src={image.src}/>
+                <ImageSize>{image.width} x {image.height}</ImageSize>
+              </ImageContainer>
             )}
-            <SavedImage style={{ margin: "12px 0 8px 44px" }}>최근 저장된 10개의 이미지가 표시됩니다.</SavedImage>
+            <SavedImage style={{ margin: "12px 0 8px 46px" }}>최근 저장된 10개의 이미지가 표시됩니다.</SavedImage>
           </SaveImagesContainer>}
         <ProfileContainer onClick={handleProfile}>
           <ProfileImage src={user.profileUrl}/>

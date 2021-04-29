@@ -1,6 +1,7 @@
 import axios from "axios";
+import { BASE_URL } from "./common";
 
-const CLIENT = axios.create({ baseURL: "https://www.moodof.net/" });
+const CLIENT = axios.create({ baseURL: BASE_URL });
 
 export const post = async (uri: string, data: object, token: string) =>
   await CLIENT.post(uri, data, {

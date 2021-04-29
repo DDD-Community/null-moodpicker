@@ -9,6 +9,7 @@ import { Switch, SwitchClassKey, SwitchProps } from "@material-ui/core";
 import { get } from "../common/api";
 // @ts-ignore
 import StorageIcon from "../images/storage.png";
+import { BASE_URL } from "../common/common";
 
 const Container = styled.div`
   width: 320px;
@@ -359,7 +360,7 @@ const IndexPage: React.FC = () => {
   }
 
   const handleProfile = () => {
-    chrome.tabs.create({ url: "https://moodof.tk" })
+    chrome.tabs.create({ url: BASE_URL })
   }
 
   return (

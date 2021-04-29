@@ -8,6 +8,7 @@ import MoodofIcon from "../images/Moodof-Black.png";
 import { useSetRecoilState } from "recoil";
 import { loginState } from "../atoms/atom";
 import MoodofHeader from "../components/MoodofHeader";
+import { BASE_URL } from "../common/common";
 
 const Container = styled.div`
   width: 320px;
@@ -86,7 +87,7 @@ const LoginPage: React.FC = () => {
 
     chrome.windows.create({
       type: "popup",
-      url: "https://www.moodof.net/oauth2/authorize/google?redirect_uri=chrome-extension://bonajmloeaegfmnganheianffheaonom/redirect_uri.html",
+      url: `${BASE_URL}/oauth2/authorize/google?redirect_uri=chrome-extension://bonajmloeaegfmnganheianffheaonom/redirect_uri.html`,
       focused: true,
       width: 480,
       height: 640,
@@ -100,7 +101,7 @@ const LoginPage: React.FC = () => {
     event.stopPropagation();
 
     chrome.tabs.create({
-      url: "https://www.moodof.net/",
+      url: BASE_URL,
       active: true
     });
   }

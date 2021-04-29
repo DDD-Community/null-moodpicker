@@ -2,6 +2,8 @@ import AWS from "aws-sdk";
 import { S3Secret } from "../secret";
 import jwt_decode from "jwt-decode";
 
+export const BASE_URL = "https://www.moodof.net";
+
 export const getQueryVariable = (query: string, variable: string) => {
   const vars = query.split('&');
   for (let i = 0; i < vars.length; i++) {

@@ -65,4 +65,3 @@ const toggleTo = (isPickMode: boolean) => {
     }
   });
 }
-

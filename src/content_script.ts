@@ -29,7 +29,7 @@ const pickImage = (event: MouseEvent) => {
     event.stopPropagation();
 
     if (!TIMER) {
-      const { src } = event.target as HTMLImageElement;
+      const { src, width, height } = event.target as HTMLImageElement;
       TIMER = setTimeout(() => {
         TIMER = null;
 
@@ -42,12 +42,12 @@ const pickImage = (event: MouseEvent) => {
               const uri = await imageUpload(src, token);
 
               await postImage(uri, token);
-              proceedPick(imageElement, src);
+              proceedPick(imageElement, src, width, height);
               return;
             }
 
             await postImage(src, token);
-            proceedPick(imageElement, src);
+            proceedPick(imageElement, src, width, height);
 
           } catch (e) {
             console.log(e.response);
@@ -67,16 +67,18 @@ const postImage = async (src: string, token: string) => {
   }, token);
 }
 
-const proceedPick = (imageElement: HTMLImageElement, src: string) => {
+const proceedPick = (imageElement: HTMLImageElement, src: string, width: number, height: number) => {
   setStyle(imageElement);
   fadeIn(imageElement, slideOut);
   document.body.appendChild(imageElement);
   chrome.storage.local.get("images", ({ images }) => {
     if (images) {
-      chrome.storage.local.set({ images: images.concat(src).slice(-10) });
+      chrome.storage.local.set({
+        images: images.concat({ src, width, height }).slice(-10)
+      });
       return;
     }
-    chrome.storage.local.set({ images: [src] });
+    chrome.storage.local.set({ images: [{ src, width, height }] });
   });
   chrome.runtime.sendMessage({ isPickMode: false });
 }
@@ -91,6 +93,7 @@ const setStyle = ({ style }: HTMLImageElement) => {
   style.maxHeight = "8rem";
   style.border = "0.3rem solid black";
   style.borderRadius = "0.5rem";
+  style.backgroundColor = "#FFFFFF";
 }
 
 const fadeIn = (element: HTMLImageElement, callback: (it: HTMLImageElement) => void) => {

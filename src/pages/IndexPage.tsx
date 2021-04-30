@@ -340,7 +340,8 @@ const IndexPage: React.FC = () => {
         const { data } = await get("/api/me", token);
         setUser(data);
       } catch (e) {
-        console.error(e);
+        setIsLogin(false);
+        location.reload();
       }
     });
 

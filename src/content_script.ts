@@ -61,10 +61,15 @@ const pickImage = (event: MouseEvent) => {
 }
 
 const postImage = async (src: string, token: string) => {
-  await post("/api/storage-photos", {
-    uri: src,
-    representativeColor: "representativeColor"
-  }, token);
+  try {
+    await post("/api/storage-photos", {
+      uri: src,
+      representativeColor: "representativeColor"
+    }, token);
+  } catch (e) {
+    console.error(e);
+    alert("저장 실패");
+  }
 }
 
 const proceedPick = (imageElement: HTMLImageElement, src: string, width: number, height: number) => {

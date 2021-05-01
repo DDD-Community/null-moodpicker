@@ -29,11 +29,11 @@ chrome.runtime.onMessage.addListener(({ isPickMode, isLogin }) => {
       "title": "무드피커에서 로그아웃",
       "contexts": ["browser_action"],
       "onclick": () => {
-        chrome.storage.sync.remove("token", () => {
-          chrome.runtime.sendMessage({ isPickMode: false, isLogin: false });
-          chrome.contextMenus.remove("logout");
-          toggleTo(false);
-        });
+        chrome.storage.local.clear();
+        chrome.storage.sync.clear();
+        chrome.runtime.sendMessage({ isPickMode: false, isLogin: false });
+        chrome.contextMenus.remove("logout");
+        toggleTo(false);
       }
     });
   }

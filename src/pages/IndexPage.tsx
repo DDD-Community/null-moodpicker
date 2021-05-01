@@ -384,6 +384,7 @@ const IndexPage: React.FC = () => {
         {!images ?
           <EmptyImageContainer>
             <EmptyImageDescription>저장된 이미지가 없습니다.</EmptyImageDescription>
+            <SavedImage style={{ margin: "12px 0 8px 46px" }}>최근 저장된 10개의 이미지가 표시됩니다.</SavedImage>
           </EmptyImageContainer> :
           <SaveImagesContainer>
             <SavedImage>저장된 이미지</SavedImage>
@@ -393,7 +394,6 @@ const IndexPage: React.FC = () => {
                 <ImageSize key={10 + index}>{image.width} x {image.height}</ImageSize>
               </ImageContainer>
             )}
-            <SavedImage style={{ margin: "12px 0 8px 46px" }}>최근 저장된 10개의 이미지가 표시됩니다.</SavedImage>
           </SaveImagesContainer>}
         <ProfileContainer onClick={handleProfile}>
           <ProfileImage src={user.profileUrl}/>

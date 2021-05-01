@@ -52,7 +52,7 @@ const StatusContainer = styled.div`
 const CurrentStatus = styled.p`
   margin-left: 16px;
 
-  font-family: "NotoSans500", serif;
+  font-family: "Noto Sans KR", serif;
   font-style: normal;
   font-weight: 500;
   font-size: 12px;
@@ -75,7 +75,7 @@ const PickerActivationContainer = styled.div`
 const PickerActivation = styled.p`
   margin: 4px 0 0 16px;
 
-  font-family: "NotoSans300", serif;
+  font-family: "Noto Sans KR", serif;
   font-style: normal;
   font-weight: 300;
   font-size: 14px;
@@ -96,9 +96,9 @@ const PickerToggleContainer = styled.div`
 `;
 
 const PickerCommand = styled.p`
-  font-family: "Roboto", serif;
+  font-family: "Noto Sans KR", serif;
   font-style: normal;
-  font-weight: normal;
+  font-weight: 400;
   font-size: 12px;
   line-height: 22px;
 
@@ -174,9 +174,10 @@ const PickSwitch = withStyles((theme: Theme) =>
 });
 
 const PickerActivationDescription = styled.p`
-  font-family: "NotoSans", serif;
+  font-family: "Noto Sans KR", serif;
   font-size: 12px;
   line-height: 18px;
+  font-weight: 400;
 
   display: flex;
   align-items: center;
@@ -201,9 +202,10 @@ const EmptyImageContainer = styled.div`
 `;
 
 const EmptyImageDescription = styled.p`
-  font-family: "NotoSans", serif;
+  font-family: "Noto Sans KR", serif;
   font-size: 12px;
   line-height: 18px;
+  font-weight: 400;
 
   color: ${COLOR.GRAY["500"]};
 `;
@@ -218,7 +220,8 @@ const SaveImagesContainer = styled.div`
 `;
 
 const SavedImage = styled.p`
-  font-family: "NotoSans500", serif;
+  font-family: "Noto Sans KR", serif;
+  font-weight: 500;
   font-size: 12px;
   line-height: 18px;
   margin-right: 200px;
@@ -285,7 +288,8 @@ const ProfileInfoContainer = styled.div`
 `;
 
 const Nickname = styled.p`
-  font-family: "Roboto", serif;
+  font-family: "Noto Sans KR", serif;
+  font-weight: 400;
   font-size: 14px;
   line-height: 22px;
   color: ${COLOR.COOL_GRAY["100"]};
@@ -293,7 +297,8 @@ const Nickname = styled.p`
 `
 
 const Email = styled.p`
-  font-family: "Roboto", serif;
+  font-family: "Noto Sans KR", serif;
+  font-weight: 400;
   font-size: 12px;
   line-height: 18px;
   color: ${COLOR.GRAY["500"]};

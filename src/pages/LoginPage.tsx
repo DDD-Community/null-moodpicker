@@ -54,10 +54,10 @@ const ButtonIcon = styled.img`
 `;
 
 const ButtonDescription = styled.p`
-  font-family: "Roboto", serif;
+  font-family: "Noto Sans KR", serif;
   font-size: 14px;
   line-height: 16px;
-  font-weight: normal;
+  font-weight: 400;
   font-style: normal;
   letter-spacing: -0.02em;
   color: ${COLOR.COOL_GRAY["100"]};

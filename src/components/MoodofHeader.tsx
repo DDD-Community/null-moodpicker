@@ -21,7 +21,7 @@ const Title = styled.p`
 `;
 
 const SubTitle = styled.p`
-  font-family: "Roboto500", serif;
+  font-family: "Noto Sans KR", serif;
   font-size: 12px;
   font-weight: 500;
   font-style: normal;

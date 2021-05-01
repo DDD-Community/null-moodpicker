@@ -360,6 +360,17 @@ const IndexPage: React.FC = () => {
     return () => chrome.runtime.onMessage.removeListener(handleMessages);
   }, []);
 
+  const getPickerCommand = () => {
+    const os = window.navigator.platform.toLocaleLowerCase();
+    if (os.includes("mac")) {
+      return "Cmd + Shift + S";
+    }
+    if (os.includes("window")) {
+      return "Ctrl + Shift + S";
+    }
+    return "Cmd + Shift + S";
+  }
+
   const togglePickMode = () => {
     chrome.runtime.sendMessage({ isPickMode: !isPickMode })
     setIsPickMode(prevState => !prevState);
@@ -380,7 +391,7 @@ const IndexPage: React.FC = () => {
           <PickerActivationContainer>
             <PickerActivation>피커 활성화</PickerActivation>
             <PickerToggleContainer>
-              <PickerCommand>Cmd + Shift + S</PickerCommand>
+              <PickerCommand>{getPickerCommand()}</PickerCommand>
               <PickSwitch checked={isPickMode} onClick={togglePickMode}/>
             </PickerToggleContainer>
           </PickerActivationContainer>

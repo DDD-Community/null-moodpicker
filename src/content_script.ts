@@ -1,5 +1,4 @@
 import { post } from "./common/api";
-import { imageUpload } from "./common/common";
 
 chrome.storage.sync.get(["isPickMode", "token"], ({ isPickMode, token }) => {
   if (token) {
@@ -38,20 +37,13 @@ const pickImage = (event: MouseEvent) => {
 
         chrome.storage.sync.get("token", async ({ token }) => {
           try {
-            if (src.startsWith("data:")) {
-              const uri = await imageUpload(src, token);
-
-              await postImage(uri, token);
+            const { status } = await postImage(src, token);
+            if (status === 201) {
               proceedPick(imageElement, src, width, height);
-              return;
             }
-
-            await postImage(src, token);
-            proceedPick(imageElement, src, width, height);
-
           } catch (e) {
-            console.log(e.response);
-            alert("요청 실패 " + e.response.data.messages);
+            console.log(e);
+            alert("저장 실패");
           }
           chrome.runtime.sendMessage({ isPickMode: false });
         });
@@ -60,17 +52,11 @@ const pickImage = (event: MouseEvent) => {
   }
 }
 
-const postImage = async (src: string, token: string) => {
-  try {
-    await post("/api/storage-photos", {
-      uri: src,
-      representativeColor: "representativeColor"
-    }, token);
-  } catch (e) {
-    console.error(e);
-    alert("저장 실패");
-  }
-}
+const postImage = async (src: string, token: string) =>
+  await post("/api/storage-photos", {
+    uri: src,
+    representativeColor: "representativeColor"
+  }, token)
 
 const proceedPick = (imageElement: HTMLImageElement, src: string, width: number, height: number) => {
   setStyle(imageElement);

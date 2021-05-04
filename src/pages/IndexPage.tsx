@@ -8,7 +8,7 @@ import { createStyles, Theme, withStyles } from "@material-ui/core/styles";
 import { Switch, SwitchClassKey, SwitchProps } from "@material-ui/core";
 import { get } from "../common/api";
 // @ts-ignore
-import StorageIcon from "../images/storage.png";
+import Arrow from "../images/arrow.png";
 import { BASE_URL } from "../common/common";
 
 const Container = styled.div`
@@ -190,10 +190,10 @@ const PickerActivationDescription = styled.p`
 
 const EmptyImageContainer = styled.div`
   width: 288px;
-  height: 105px;
+  height: 202px;
   margin-left: 16px;
   margin-top: 3px;
-
+  margin-bottom: 16px;
   background: ${COLOR.GRAY["50"]};
   border-radius: 8px;
   display: flex;
@@ -225,6 +225,7 @@ const SavedImage = styled.p`
   font-size: 12px;
   line-height: 18px;
   margin-right: 200px;
+  margin-left: 16px;
   color: ${COLOR.OVERLAY_DARK["40"]};
 `;
 
@@ -305,12 +306,10 @@ const Email = styled.p`
   margin: 0 0 12px 0;
 `;
 
-const ImageStorageIcon = styled.img`
-  width: 24px;
-  height: 24px;
-  margin: 18px 16px 18px 80px;
-  float: right;
-  opacity: 0.8;
+const ArrowIcon = styled.img`
+  width: 6px;
+  height: 12px;
+  margin: 24px 25px 24px 100px;
 `;
 
 type User = {
@@ -351,12 +350,13 @@ const IndexPage: React.FC = () => {
     });
 
     chrome.storage.local.get("images", ({ images }) => {
-        if (images) {
+        if (!!images) {
           setImages(images.reverse());
+          return;
         }
+        setImages([]);
       }
-    )
-
+    );
     return () => chrome.runtime.onMessage.removeListener(handleMessages);
   }, []);
 
@@ -386,17 +386,16 @@ const IndexPage: React.FC = () => {
           </PickerActivationContainer>
           <PickerActivationDescription>피커 활성화로 이미지를 클릭하여 저장하세요.</PickerActivationDescription>
         </ActionContainer>
-        {!images ?
+        <SavedImage>저장된 이미지</SavedImage>
+        {!images || images.length === 0 ?
           <EmptyImageContainer>
-            <EmptyImageDescription>저장된 이미지가 없습니다.</EmptyImageDescription>
-            <SavedImage style={{ margin: "12px 0 8px 46px" }}>최근 저장된 10개의 이미지가 표시됩니다.</SavedImage>
+            <EmptyImageDescription>최근 저장된 10개의 이미지가 표시됩니다.</EmptyImageDescription>
           </EmptyImageContainer> :
           <SaveImagesContainer>
-            <SavedImage>저장된 이미지</SavedImage>
             {images.map((image, index) =>
-              <ImageContainer>
-                <PickedImage key={index} src={image.src}/>
-                <ImageSize key={10 + index}>{image.width} x {image.height}</ImageSize>
+              <ImageContainer key={image.src + image.height}>
+                <PickedImage key={image.src} src={image.src}/>
+                <ImageSize key={image.src + image.width}>{image.width} x {image.height}</ImageSize>
               </ImageContainer>
             )}
           </SaveImagesContainer>}
@@ -406,7 +405,7 @@ const IndexPage: React.FC = () => {
             <Nickname>{user.nickname}</Nickname>
             <Email>{user.email}</Email>
           </ProfileInfoContainer>
-          <ImageStorageIcon src={StorageIcon}/>
+          <ArrowIcon src={Arrow}/>
         </ProfileContainer>
       </MainContainer>
     </Container>

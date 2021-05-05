@@ -295,7 +295,7 @@ const Nickname = styled.p`
   line-height: 22px;
   color: ${COLOR.COOL_GRAY["100"]};
   margin: 0;
-`
+`;
 
 const Email = styled.p`
   font-family: "Noto Sans KR", serif;
@@ -344,6 +344,7 @@ const IndexPage: React.FC = () => {
         const { data } = await get("/api/me", token);
         setUser(data);
       } catch (e) {
+        console.log(e);
         setIsLogin(false);
         location.reload();
       }

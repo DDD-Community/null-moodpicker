@@ -38,10 +38,8 @@
     }
   },
   "permissions": [
-    "activeTab",
     "storage",
     "<all_urls>",
-    "tabs",
     "contextMenus"
   ],
   "web_accessible_resources": [

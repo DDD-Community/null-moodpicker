@@ -87,7 +87,7 @@ const LoginPage: React.FC = () => {
 
     chrome.windows.create({
       type: "popup",
-      url: `${BASE_URL}/oauth2/authorize/google?redirect_uri=chrome-extension://bonajmloeaegfmnganheianffheaonom/redirect_uri.html`,
+      url: `${BASE_URL}/oauth2/authorize/google?redirect_uri=chrome-extension://fbjdlhkkoiiginpjpminaelaicbbmlal/redirect_uri.html`,
       focused: true,
       width: 480,
       height: 640,

@@ -346,7 +346,6 @@ const IndexPage: React.FC = () => {
       } catch (e) {
         console.log(e);
         setIsLogin(false);
-        location.reload();
       }
     });
 

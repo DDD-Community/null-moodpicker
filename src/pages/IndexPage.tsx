@@ -85,6 +85,8 @@ const PickerActivation = styled.p`
   align-items: center;
   letter-spacing: -0.01em;
 
+  width: 70px;
+
   color: ${COLOR.COOL_GRAY["100"]};
 `;
 
@@ -106,7 +108,7 @@ const PickerCommand = styled.p`
   align-items: center;
 
   margin: 6px 80px 0 8px;
-
+  width: 84px;
   color: ${COLOR.GRAY["500"]};
 `;
 
@@ -124,8 +126,7 @@ const PickSwitch = withStyles((theme: Theme) =>
       width: 40,
       height: 24,
       padding: 0,
-      margin: theme.spacing(1),
-      marginLeft: 16,
+      marginRight: 16,
     },
     switchBase: {
       padding: 1,
@@ -327,8 +328,10 @@ const IndexPage: React.FC = () => {
     height: number;
   }>>([])
   const [user, setUser] = useState<User>({ email: "", nickname: "", profileUrl: "" });
+  const [pickerCommand, setPickerCommand] = useState<string>("");
 
   useEffect(() => {
+    setPickerCommand(getPickerCommand());
     const handleMessages = ({ isPickMode, isLogin }: { isPickMode: boolean, isLogin: boolean }) => {
       isPickMode !== undefined ? setIsPickMode(isPickMode) : null;
       isLogin !== undefined ? setIsLogin(isLogin) : null;
@@ -346,6 +349,7 @@ const IndexPage: React.FC = () => {
       } catch (e) {
         console.log(e);
         setIsLogin(false);
+        chrome.storage.sync.remove("token");
       }
     });
 
@@ -359,6 +363,17 @@ const IndexPage: React.FC = () => {
     );
     return () => chrome.runtime.onMessage.removeListener(handleMessages);
   }, []);
+
+  const getPickerCommand = () => {
+    const os = window.navigator.platform.toLocaleLowerCase();
+    if (os.includes("mac")) {
+      return "Cmd + Shift + S";
+    }
+    if (os.includes("win")) {
+      return "Ctrl + Shift + S";
+    }
+    return "Cmd + Shift + S";
+  }
 
   const togglePickMode = () => {
     chrome.runtime.sendMessage({ isPickMode: !isPickMode })
@@ -380,7 +395,7 @@ const IndexPage: React.FC = () => {
           <PickerActivationContainer>
             <PickerActivation>피커 활성화</PickerActivation>
             <PickerToggleContainer>
-              <PickerCommand>Cmd + Shift + S</PickerCommand>
+              <PickerCommand>{pickerCommand}</PickerCommand>
               <PickSwitch checked={isPickMode} onClick={togglePickMode}/>
             </PickerToggleContainer>
           </PickerActivationContainer>

@@ -35,7 +35,7 @@ const ActionContainer = styled.div`
   padding: 0;
 
   width: 320px;
-  height: 100px;
+  height: 98px;
 
   order: 0;
 
@@ -68,47 +68,32 @@ const PickerActivationContainer = styled.div`
   display: flex;
   flex-direction: row;
   order: 1;
-  margin-top: 4px;
-  height: 32px;
+  margin-top: 8px;
+  margin-left: 16px;
+  height: 24px;
 `;
 
-const PickerActivation = styled.p`
-  margin: 4px 0 0 16px;
-
+const PickerActivation = styled.span`
   font-family: "Noto Sans KR", serif;
   font-style: normal;
-  font-weight: 300;
+  font-weight: 500;
   font-size: 14px;
   line-height: 22px;
 
-  display: flex;
-  align-items: center;
   letter-spacing: -0.01em;
 
-  width: 70px;
+  margin-right: 8px;
 
   color: ${COLOR.COOL_GRAY["100"]};
 `;
 
-const PickerToggleContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 0;
-`;
-
-const PickerCommand = styled.p`
+const PickerCommand = styled.span`
   font-family: "Noto Sans KR", serif;
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
   line-height: 22px;
 
-  display: flex;
-  align-items: center;
-
-  margin: 6px 80px 0 8px;
-  width: 84px;
   color: ${COLOR.GRAY["500"]};
 `;
 
@@ -127,6 +112,7 @@ const PickSwitch = withStyles((theme: Theme) =>
       height: 24,
       padding: 0,
       marginRight: 16,
+      marginLeft: 88,
     },
     switchBase: {
       padding: 1,
@@ -186,7 +172,7 @@ const PickerActivationDescription = styled.p`
 
   color: ${COLOR.GRAY["500"]};
   margin-left: 16px;
-  margin-top: 2px;
+  margin-top: 4px;
 `;
 
 const EmptyImageContainer = styled.div`
@@ -304,13 +290,13 @@ const Email = styled.p`
   font-size: 12px;
   line-height: 18px;
   color: ${COLOR.GRAY["500"]};
-  margin: 0 0 12px 0;
+  margin: -3px 0 12px 0;
 `;
 
 const ArrowIcon = styled.img`
   width: 6px;
   height: 12px;
-  margin: 24px 25px 24px 100px;
+  margin: 25px 25.5px 25px 92.5px;
 `;
 
 type User = {
@@ -327,7 +313,11 @@ const IndexPage: React.FC = () => {
     width: number;
     height: number;
   }>>([])
-  const [user, setUser] = useState<User>({ email: "", nickname: "", profileUrl: "" });
+  const [user, setUser] = useState<User>({
+    email: "moodof.net",
+    nickname: "moodof",
+    profileUrl: "https://img.icons8.com/cotton/2x/gender-neutral-user--v2.png"
+  });
   const [pickerCommand, setPickerCommand] = useState<string>("");
 
   useEffect(() => {
@@ -340,7 +330,7 @@ const IndexPage: React.FC = () => {
     chrome.runtime.onMessage.addListener(handleMessages);
 
     chrome.storage.sync.get(["isPickMode", "token"], async ({ isPickMode, token }) => {
-      setIsPickMode(isPickMode);
+      isPickMode ? setIsPickMode(isPickMode) : setIsPickMode(false);
       token ? setIsLogin(true) : setIsLogin(false);
       chrome.runtime.sendMessage({ isPickMode });
       try {
@@ -394,10 +384,8 @@ const IndexPage: React.FC = () => {
           </StatusContainer>
           <PickerActivationContainer>
             <PickerActivation>피커 활성화</PickerActivation>
-            <PickerToggleContainer>
-              <PickerCommand>{pickerCommand}</PickerCommand>
-              <PickSwitch checked={isPickMode} onClick={togglePickMode}/>
-            </PickerToggleContainer>
+            <PickerCommand>{pickerCommand}</PickerCommand>
+            <PickSwitch checked={isPickMode} onClick={togglePickMode}/>
           </PickerActivationContainer>
           <PickerActivationDescription>피커 활성화로 이미지를 클릭하여 저장하세요.</PickerActivationDescription>
         </ActionContainer>

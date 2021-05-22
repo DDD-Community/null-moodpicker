@@ -83,6 +83,7 @@ const PickerActivation = styled.span`
   letter-spacing: -0.01em;
 
   margin-right: 8px;
+  white-space: nowrap;
 
   color: ${COLOR.COOL_GRAY["100"]};
 `;
@@ -94,6 +95,7 @@ const PickerCommand = styled.span`
   font-size: 12px;
   line-height: 22px;
 
+  white-space: nowrap;
   color: ${COLOR.GRAY["500"]};
 `;
 

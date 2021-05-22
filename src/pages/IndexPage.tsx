@@ -111,7 +111,6 @@ const PickSwitch = withStyles((theme: Theme) =>
       width: 40,
       height: 24,
       padding: 0,
-      marginRight: 16,
       marginLeft: 88,
     },
     switchBase: {

@@ -1,7 +1,5 @@
 import { createGlobalStyle } from "styled-components";
 // @ts-ignore
-import Butler from "./Butler.woff2";
-// @ts-ignore
 import NotoSansKRThin from "./NotoSansKR-Thin.otf";
 // @ts-ignore
 import NotoSansKRLight from "./NotoSansKR-Light.otf";
@@ -16,13 +14,6 @@ import NotoSansKRBlack from "./NotoSansKR-Black.otf";
 
 
 export default createGlobalStyle`
-  @font-face {
-    font-family: "Butler";
-    font-style: normal;
-    font-weight: 400;
-    src: url(${Butler}) format('woff2');
-  }
-
   @font-face {
     font-family: 'Noto Sans KR';
     src: url(${NotoSansKRThin}) format('truetype');

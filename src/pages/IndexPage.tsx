@@ -8,12 +8,12 @@ import { createStyles, Theme, withStyles } from "@material-ui/core/styles";
 import { Switch, SwitchClassKey, SwitchProps } from "@material-ui/core";
 import { get } from "../common/api";
 // @ts-ignore
-import Arrow from "../images/arrow.png";
+import Arrow from "../images/Arrow.svg";
 import { BASE_URL } from "../common/common";
 
 const Container = styled.div`
   width: 320px;
-  height: 480px;
+  height: 440px;
   padding: 0;
   margin: 0;
 `;
@@ -24,7 +24,7 @@ const MainContainer = styled.div`
   align-items: flex-start;
   padding: 16px 0 0 0;
 
-  height: 424px;
+  height: 384px;
   background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%), #FFFFFF;
 `;
 
@@ -34,43 +34,20 @@ const ActionContainer = styled.div`
   align-items: flex-start;
   padding: 0;
 
-  width: 320px;
-  height: 98px;
+  margin-left: 16px;
+  width: 288px;
+  height: 61px;
 
   order: 0;
 
   border-bottom: 1px solid ${COLOR.GRAY["200"]};
   border-radius: 2px;
-`
-
-const StatusContainer = styled.div`
-  display: flex;
-  height: 18px;
-  order: 0;
-`;
-
-const CurrentStatus = styled.p`
-  margin-left: 16px;
-
-  font-family: "Noto Sans KR", serif;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 18px;
-
-  display: flex;
-  align-items: center;
-
-  color: ${COLOR.OVERLAY_DARK["40"]};
 `;
 
 const PickerActivationContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  order: 1;
-  margin-top: 8px;
-  margin-left: 16px;
+  display: block;
   height: 24px;
+  width: 288px;
 `;
 
 const PickerActivation = styled.span`
@@ -113,7 +90,7 @@ const PickSwitch = withStyles((theme: Theme) =>
       width: 40,
       height: 24,
       padding: 0,
-      marginLeft: 88,
+      float: "right",
     },
     switchBase: {
       padding: 1,
@@ -172,7 +149,6 @@ const PickerActivationDescription = styled.p`
   order: 2;
 
   color: ${COLOR.GRAY["500"]};
-  margin-left: 16px;
   margin-top: 4px;
 `;
 
@@ -212,8 +188,7 @@ const SavedImage = styled.p`
   font-weight: 500;
   font-size: 12px;
   line-height: 18px;
-  margin-right: 200px;
-  margin-left: 16px;
+  margin: 16px 0 8px 16px;
   color: ${COLOR.OVERLAY_DARK["40"]};
 `;
 
@@ -294,10 +269,15 @@ const Email = styled.p`
   margin: -3px 0 12px 0;
 `;
 
+const ArrowIconContainer = styled.div`
+  display: flex;
+  padding-right: 21.5px;
+  margin-left: auto;
+  align-items: center;
+`;
+
 const ArrowIcon = styled.img`
-  width: 6px;
-  height: 12px;
-  margin: 25px 25.5px 25px 92.5px;
+  width: 100%;
 `;
 
 type User = {
@@ -380,9 +360,6 @@ const IndexPage: React.FC = () => {
       <MoodofHeader/>
       <MainContainer>
         <ActionContainer>
-          <StatusContainer>
-            <CurrentStatus>현재상태</CurrentStatus>
-          </StatusContainer>
           <PickerActivationContainer>
             <PickerActivation>피커 활성화</PickerActivation>
             <PickerCommand>{pickerCommand}</PickerCommand>
@@ -393,7 +370,7 @@ const IndexPage: React.FC = () => {
         <SavedImage>저장된 이미지</SavedImage>
         {!images || images.length === 0 ?
           <EmptyImageContainer>
-            <EmptyImageDescription>최근 저장된 10개의 이미지가 표시됩니다.</EmptyImageDescription>
+            <EmptyImageDescription>최근 저장된 20개의 이미지가 표시됩니다.</EmptyImageDescription>
           </EmptyImageContainer> :
           <SaveImagesContainer>
             {images.map((image, index) =>
@@ -409,7 +386,9 @@ const IndexPage: React.FC = () => {
             <Nickname>{user.nickname}</Nickname>
             <Email>{user.email}</Email>
           </ProfileInfoContainer>
-          <ArrowIcon src={Arrow}/>
+          <ArrowIconContainer>
+            <ArrowIcon src={Arrow}/>
+          </ArrowIconContainer>
         </ProfileContainer>
       </MainContainer>
     </Container>

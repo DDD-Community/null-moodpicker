@@ -65,7 +65,7 @@ const proceedPick = (imageElement: HTMLImageElement, src: string, width: number,
   chrome.storage.local.get("images", ({ images }) => {
     if (images) {
       chrome.storage.local.set({
-        images: images.concat({ src, width, height }).slice(-10)
+        images: images.concat({ src, width, height }).slice(-20)
       });
       return;
     }

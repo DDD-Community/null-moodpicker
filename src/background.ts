@@ -1,4 +1,5 @@
 import Tab = chrome.tabs.Tab;
+import setBadgeText = chrome.browserAction.setBadgeText;
 
 const PICK = "pick";
 const PICK_MODE_ICON = "pickerIcon-active.png";
@@ -22,7 +23,9 @@ chrome.storage.sync.get(["token", "isPickMode"], ({ token, isPickMode }) => {
   }
 });
 
-chrome.runtime.onMessage.addListener(({ isPickMode, isLogin }) => {
+let windowId: number;
+
+chrome.runtime.onMessage.addListener(({ isPickMode, isLogin, isLoginFinished, redirectWindowId }) => {
   if (isLogin === true) {
     chrome.contextMenus.create({
       "id": "logout",
@@ -39,6 +42,15 @@ chrome.runtime.onMessage.addListener(({ isPickMode, isLogin }) => {
   }
   if (isPickMode !== undefined) {
     toggleTo(isPickMode);
+  }
+  if (redirectWindowId !== undefined) {
+    windowId = redirectWindowId;
+  }
+  if (isLoginFinished === true) {
+    chrome.windows.remove(windowId);
+    chrome.browserAction.setBadgeBackgroundColor({ color: [104, 192, 100, 1] });
+    chrome.browserAction.setBadgeText({ text: "Hello" });
+    setTimeout(() => setBadgeText({ text: "" }), 3000);
   }
 });
 

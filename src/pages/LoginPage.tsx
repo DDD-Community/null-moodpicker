@@ -84,15 +84,16 @@ const LoginPage: React.FC = () => {
   const handleLogin = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
-
     chrome.windows.create({
       type: "popup",
-      url: `${BASE_URL}/oauth2/authorize/google?redirect_uri=chrome-extension://fbjdlhkkoiiginpjpminaelaicbbmlal/redirect_uri.html`,
+      url: `${BASE_URL}/oauth2/authorize/google?redirect_uri=chrome-extension://bonajmloeaegfmnganheianffheaonom/redirect_uri.html`,
       focused: true,
       width: 480,
       height: 640,
       top: Math.round(screen.availHeight / 2 - 320),
       left: Math.round(screen.availWidth / 2 - 240),
+    }, window => {
+      chrome.runtime.sendMessage({ redirectWindowId: window?.id });
     });
   }
 

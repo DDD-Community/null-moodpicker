@@ -8,7 +8,7 @@ const RedirectUri: React.FC = () => {
     chrome.storage.sync.clear(() => {
       const token = getQueryVariable(window.location.search.substring(1), "token");
       chrome.storage.sync.set({ token }, () => {
-        chrome.runtime.sendMessage({ isLogin: true });
+        chrome.runtime.sendMessage({ isLogin: true, isLoginFinished: true });
       });
     });
   }, []);

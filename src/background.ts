@@ -1,25 +1,14 @@
 import Tab = chrome.tabs.Tab;
-import setBadgeText = chrome.browserAction.setBadgeText;
 
 const PICK = "pick";
 const PICK_MODE_ICON = "pickerIcon-active.png";
+const NO_LOGIN_ICON = "pickerIcon-inactive.png";
 const DEFAULT_ICON = "pickerIcon-default.png";
 
 chrome.storage.sync.get(["token", "isPickMode"], ({ token, isPickMode }) => {
-  toggleTo(!!isPickMode);
+  toggleTo(!!isPickMode, !!token);
   if (token) {
-    chrome.contextMenus.create({
-      "id": "logout",
-      "title": "무드피커에서 로그아웃",
-      "contexts": ["browser_action"],
-      "onclick": () => {
-        chrome.storage.sync.remove("token", () => {
-          chrome.runtime.sendMessage({ isPickMode: false, isLogin: false });
-          chrome.contextMenus.remove("logout");
-          toggleTo(false);
-        });
-      }
-    });
+    createContextMenu();
   }
 });
 
@@ -27,32 +16,38 @@ let windowId: number;
 
 chrome.runtime.onMessage.addListener(({ isPickMode, isLogin, isLoginFinished, redirectWindowId }) => {
   if (isLogin === true) {
-    chrome.contextMenus.create({
-      "id": "logout",
-      "title": "무드피커에서 로그아웃",
-      "contexts": ["browser_action"],
-      "onclick": () => {
-        chrome.storage.local.clear();
-        chrome.storage.sync.clear();
-        chrome.runtime.sendMessage({ isPickMode: false, isLogin: false });
-        chrome.contextMenus.remove("logout");
-        toggleTo(false);
-      }
-    });
-  }
-  if (isPickMode !== undefined) {
-    toggleTo(isPickMode);
+    createContextMenu();
   }
   if (redirectWindowId !== undefined) {
     windowId = redirectWindowId;
   }
   if (isLoginFinished === true) {
     chrome.windows.remove(windowId);
-    chrome.browserAction.setBadgeBackgroundColor({ color: [104, 192, 100, 1] });
-    chrome.browserAction.setBadgeText({ text: "Hello" });
-    setTimeout(() => setBadgeText({ text: "" }), 3000);
+  }
+  if (isLogin !== undefined) {
+    toggleTo(false, isLogin);
+    return;
+  }
+  if (isPickMode !== undefined) {
+    toggleTo(isPickMode, true);
+    return;
   }
 });
+
+const createContextMenu = () => {
+  chrome.contextMenus.create({
+    "id": "logout",
+    "title": "무드피커에서 로그아웃",
+    "contexts": ["browser_action"],
+    "onclick": () => {
+      chrome.storage.local.clear();
+      chrome.storage.sync.clear();
+      chrome.runtime.sendMessage({ isPickMode: false, isLogin: false });
+      chrome.contextMenus.remove("logout");
+      toggleTo(false, false);
+    }
+  });
+}
 
 chrome.commands.onCommand.addListener(command => {
   if (command === PICK) {
@@ -60,13 +55,13 @@ chrome.commands.onCommand.addListener(command => {
       if (!token) {
         return;
       }
-      isPickMode ? toggleTo(false) : toggleTo(true);
+      isPickMode ? toggleTo(false, true) : toggleTo(true, true);
     });
   }
 });
 
-const toggleTo = (isPickMode: boolean) => {
-  chrome.browserAction.setIcon({ path: isPickMode ? PICK_MODE_ICON : DEFAULT_ICON });
+const toggleTo = (isPickMode: boolean, isLogin: boolean) => {
+  chrome.browserAction.setIcon({ path: isLogin ? isPickMode ? PICK_MODE_ICON : DEFAULT_ICON : NO_LOGIN_ICON });
 
   chrome.storage.sync.set({ isPickMode });
 

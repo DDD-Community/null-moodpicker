@@ -8,7 +8,7 @@ const DEFAULT_ICON = "pickerIcon-default.png";
 chrome.storage.sync.get(["token", "isPickMode"], ({ token, isPickMode }) => {
   toggleTo(!!isPickMode, !!token);
   if (token) {
-    createContextMenu();
+    createLogoutContextMenu();
   }
 });
 
@@ -16,7 +16,7 @@ let windowId: number;
 
 chrome.runtime.onMessage.addListener(({ isPickMode, isLogin, isLoginFinished, redirectWindowId }) => {
   if (isLogin === true) {
-    createContextMenu();
+    createLogoutContextMenu();
   }
   if (redirectWindowId !== undefined) {
     windowId = redirectWindowId;
@@ -34,7 +34,7 @@ chrome.runtime.onMessage.addListener(({ isPickMode, isLogin, isLoginFinished, re
   }
 });
 
-const createContextMenu = () => {
+const createLogoutContextMenu = () => {
   chrome.contextMenus.create({
     "id": "logout",
     "title": "무드피커에서 로그아웃",

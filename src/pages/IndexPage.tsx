@@ -62,7 +62,7 @@ const PickerActivation = styled.span`
   margin-right: 8px;
   white-space: nowrap;
 
-  color: ${COLOR.COOL_GRAY["100"]};
+  color: ${COLOR.COOL_GRAY["90"]};
 `;
 
 const PickerCommand = styled.span`
@@ -73,7 +73,7 @@ const PickerCommand = styled.span`
   line-height: 22px;
 
   white-space: nowrap;
-  color: ${COLOR.GRAY["500"]};
+  color: ${COLOR.OVERLAY_DARK["40"]};
 `;
 
 interface Styles extends Partial<Record<SwitchClassKey, string>> {
@@ -148,7 +148,7 @@ const PickerActivationDescription = styled.p`
   align-items: center;
   order: 2;
 
-  color: ${COLOR.GRAY["500"]};
+  color: ${COLOR.OVERLAY_DARK["40"]};
   margin-top: 4px;
 `;
 
@@ -159,7 +159,7 @@ const EmptyImageContainer = styled.div`
   margin-top: 3px;
   margin-bottom: 16px;
   background: ${COLOR.GRAY["50"]};
-  border-radius: 8px;
+  border-radius: 4px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -189,7 +189,7 @@ const SavedImage = styled.p`
   font-size: 12px;
   line-height: 18px;
   margin: 16px 0 8px 16px;
-  color: ${COLOR.OVERLAY_DARK["40"]};
+  color: ${COLOR.GRAY["500"]};
 `;
 
 const ImageContainer = styled.div`
@@ -231,7 +231,7 @@ const ProfileContainer = styled.div`
   transition: background-color 150ms linear;
 
   &:hover {
-    background-color: ${COLOR.GRAY["100"]};
+    background-color: ${COLOR.GRAY["50"]};
   }
 `;
 
@@ -253,10 +253,10 @@ const ProfileInfoContainer = styled.div`
 
 const Nickname = styled.p`
   font-family: "Noto Sans KR", serif;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 14px;
   line-height: 22px;
-  color: ${COLOR.COOL_GRAY["100"]};
+  color: ${COLOR.COOL_GRAY["90"]};
   margin: 0;
 `;
 
@@ -265,7 +265,7 @@ const Email = styled.p`
   font-weight: 400;
   font-size: 12px;
   line-height: 18px;
-  color: ${COLOR.GRAY["500"]};
+  color: ${COLOR.OVERLAY_DARK["40"]};
   margin: -3px 0 12px 0;
 `;
 
@@ -321,6 +321,7 @@ const IndexPage: React.FC = () => {
         console.log(e);
         setIsLogin(false);
         chrome.storage.sync.remove("token");
+        chrome.runtime.sendMessage({ isLogin: false });
       }
     });
 

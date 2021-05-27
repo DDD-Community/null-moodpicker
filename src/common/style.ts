@@ -8,6 +8,7 @@ export const COLOR = {
     900: "#212121",
   },
   COOL_GRAY: {
+    90: "#21272A",
     100: "#121619",
   },
   OVERLAY_DARK: {
